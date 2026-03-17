@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from './Auth.module.css';
 import logo from "../assets/Logo.png";
 
@@ -30,8 +30,10 @@ function Signup() {
   return (
     <div className={styles["auth-container"]}>
       <div className={styles.left}>
-        <img src={logo} alt="logo" />
-        <h1>Redbird Bets</h1>
+        <Link to="/" className={styles["brand-link"]}>
+          <img src={logo} alt="logo" />
+          <h1>Redbird Bets</h1>
+        </Link>
       </div>
 
       <div className={styles.right}>

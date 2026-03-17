@@ -15,13 +15,29 @@
   --color-border-dark: #c8c8c8;
 }
 
-
-
 .auth-container {
   display: flex;
   height: 100vh;
   width: 100vw;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
+
+
+.brand-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s ease;
+}
+
+.brand-link:hover {
+  opacity: 0.9;
+}
+
 
 .left {
   flex: 1;
@@ -65,8 +81,6 @@
   width: 100%;
   max-width: 550px;
 }
-
-
 
 .form {
   display: flex;
@@ -157,8 +171,4 @@
     width: 100%;
     padding: 60px 20px;
   }
-}
-
-.auth-container {
-  font-family: 'Segoe UI', Arial, sans-serif;
 }
