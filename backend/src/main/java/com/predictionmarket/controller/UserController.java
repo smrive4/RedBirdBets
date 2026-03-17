@@ -14,9 +14,10 @@ public class UserController {
 
     @PostMapping("/register")
     public User register(@RequestBody User user) {
-        return userService.registerUser(
-                user.getUsername(),
-                user.getPassword()
-        );
+        return userService.registerUser(user.getUsername(),user.getPassword(),user.getBalance());
+    }
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 }

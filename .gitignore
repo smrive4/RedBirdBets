@@ -11,6 +11,9 @@ node_modules/
 frontend/build/
 frontend/dist/
 
-# Enviroment
+# Environment
 .env
 *.env.local
+
+# VS Code
+.vscode/

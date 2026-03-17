@@ -15,9 +15,7 @@ public class BetController {
     private BetService betService;
 
     @PostMapping("/user/{userId}/market/{marketId}")
-    public Bet createBet(@PathVariable Long userId,
-                         @PathVariable Long marketId,
-                         @RequestBody Bet bet) {
+    public Bet createBet(@PathVariable Long userId,@PathVariable Long marketId,@RequestBody Bet bet) {
         return betService.createBet(userId, marketId, bet);
     }
 

@@ -24,21 +24,48 @@ public class Market {
     @Column(nullable=false)
     private MarketStatus status = MarketStatus.OPEN;
 
+    @Enumerated(EnumType.STRING)
+    private Bet.BetSide winningSide;
+
     public enum MarketStatus {
         OPEN, CLOSED
     }
 
-    public Long getId() { return id; }
+    public Long getId() { 
+        return id; 
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getTitle() { 
+        return title; 
+    }
+    public void setTitle(String title) { 
+        this.title = title; 
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getDescription() { 
+        return description; 
+    }
+    public void setDescription(String description) { 
+        this.description = description; 
+    }
 
     public LocalDateTime getCloseTime() { return closeTime; }
-    public void setCloseTime(LocalDateTime closeTime) { this.closeTime = closeTime; }
+    public void setCloseTime(LocalDateTime closeTime) { 
+        this.closeTime = closeTime; 
+    }
 
-    public MarketStatus getStatus() { return status; }
-    public void setStatus(MarketStatus status) { this.status = status; }
+    public MarketStatus getStatus() { 
+        return status; 
+    }
+    public void setStatus(MarketStatus status) { 
+        this.status = status; 
+    }
+
+    public Bet.BetSide getWinningSide() {
+        return winningSide;
+    }
+
+    public void setWinningSide(Bet.BetSide winningSide) {
+        this.winningSide = winningSide;
+    }
 }
