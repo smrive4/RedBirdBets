@@ -1,6 +1,28 @@
-html, body, #root {
-  height: 100%;
-  width: 100%;
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --color-bg: #ededed; /* page background */
+  --color-surface: #ffffff; /* cards, navbar */
+  --color-surface-alt: #f5f5f5; /* subtle section bg, inputs */
+
+  --color-primary: #ce1126; /* ISU red — buttons, accents, highlights */
+  --color-primary-dark: #a30000; /* hover state for red elements */
+  --color-primary-soft: #f5e6e6; /* red tint bg — tags, badges */
+
+  --color-text-primary: #1a1a1a; /* headings */
+  --color-text-secondary: #555555; /* body, descriptions */
+  --color-text-muted: #999999; /* labels, timestamps */
+
+  --color-border: #dedede; /* card borders, dividers */
+  --color-border-dark: #c8c8c8; /* hover borders */
+}
+
+* {
   margin: 0;
-  padding: 0;
 }
