@@ -1,0 +1,114 @@
+.background {
+  background-color: var(--color-surface-alt);
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 32px;
+}
+
+.lhNav {
+  display: flex;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--color-primary);
+  letter-spacing: 0.08em;
+}
+
+.heroSection {
+  padding: 80px 20px;
+}
+
+.heroTitle {
+  font-size: 84px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.heroDesc {
+  color: #737373;
+  font-size: 40px;
+  margin-bottom: 24px;
+}
+
+.button {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 20px;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: var(--color-primary);
+}
+
+.buttonOutline {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 20px;
+  color: #ce1126;
+  border: 1.5px solid #ce1126;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonOutline:hover {
+  background-color: #ce112610;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.highlight {
+  color: #ce1126;
+}
+
+.sectionTitle {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: first baseline;
+  gap: 40px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 18px;
+
+  max-width: 300px;
+}
+
+.cardTitle {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.worksSection {
+  background-color: var(--color-bg);
+  padding: 60px 20px;
+}
+
+.footer {
+  background: #111111;
+  padding: 32px 28px;
+}
+
+.footerCopy {
+  text-align: center;
+  color: #888888;
+}
