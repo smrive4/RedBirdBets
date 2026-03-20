@@ -377,3 +377,17 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 9999;
 }
+
+.navLink {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: inherit;
+  color: var(--color-text-secondary);
+  padding: 0;
+}
+.navLink:hover {
+  color: var(--color-primary);
+}
