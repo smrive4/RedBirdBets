@@ -1,9 +1,20 @@
 package com.predictionmarket.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.predictionmarket.dto.LeaderboardEntryDTO;
 import com.predictionmarket.model.User;
 import com.predictionmarket.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,5 +50,10 @@ public class UserController {
             throw new IllegalStateException("Only admins can promote users");
         }
         return userService.promoteToAdmin(id);
+    }
+
+    @GetMapping("/leaderboard")
+    public List<LeaderboardEntryDTO> getLeaderboard(){
+        return userService.getLeaderboard().stream().map(user -> new LeaderboardEntryDTO(user.getId(), user.getUsername(), user.getBalance())).collect(Collectors.toList());
     }
 }
