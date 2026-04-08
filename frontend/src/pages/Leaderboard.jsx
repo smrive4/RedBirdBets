@@ -9,16 +9,21 @@ function Leaderboard() {
   const navigate = useNavigate()
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
+  const [mode, setMode] = useState('balance')
+
+  function handleModeChange(modeSelected) {
+    setMode(modeSelected)
+  }
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/users/leaderboard')
+    fetch(`http://localhost:8080/api/users/leaderboard/${mode}`)
       .then((res) => res.json())
       .then((data) => {
         setEntries(data)
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [])
+  }, [mode])
 
   return (
     <div>
@@ -62,6 +67,32 @@ function Leaderboard() {
         <h1>Leaderboard</h1>
         <p>See how you stack up against other bettors.</p>
       </div>
+
+      {/* Toggle Buttons */}
+      <div className={styles.container}>
+        <div className={styles.buttonContainer}>
+          <button
+            onClick={() => handleModeChange('balance')}
+            className={styles.btn}
+          >
+            By Balance
+          </button>
+          <button
+            onClick={() => handleModeChange('winnings')}
+            className={styles.btn}
+          >
+            By Winnings
+          </button>
+          <button
+            onClick={() => handleModeChange('losses')}
+            className={styles.btn}
+          >
+            By Losses
+          </button>
+        </div>
+      </div>
+
+      {/* LeaderBoard */}
       <div className={styles.content}>
         {loading ? (
           <p>Loading...</p>

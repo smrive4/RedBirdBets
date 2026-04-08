@@ -56,7 +56,7 @@ public class UserController {
         return userService.promoteToAdmin(id);
     }
 
-    @GetMapping("/leaderboard")
+    @GetMapping("/leaderboard/balance")
     public List<LeaderboardEntryDTO> getLeaderboard(){
         return userService.getLeaderboard().stream().map(user -> new LeaderboardEntryDTO(user.getId(), user.getUsername(), user.getBalance())).collect(Collectors.toList());
     }
