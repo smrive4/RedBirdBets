@@ -1,8 +1,18 @@
 package com.predictionmarket.model;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "bets")
@@ -29,6 +39,12 @@ public class Bet {
 
     @Column(nullable = false)
     private LocalDateTime placedAt;
+
+    @Column(nullable = false, columnDefinition= "boolean default false")
+    private boolean won = false;
+
+    @Column(nullable = false, columnDefinition= "decimal(10,2) default 0.00")
+    private BigDecimal payout = BigDecimal.ZERO;
 
     public enum BetSide {
         YES, NO
@@ -77,4 +93,21 @@ public class Bet {
     public void setPlacedAt(LocalDateTime placedAt) {
         this.placedAt = placedAt;
     }
+
+    public void setWon(boolean won){
+        this.won = won;
+    }
+
+    public boolean isWon(){
+        return this.won;
+    }
+
+    public void setPayout(BigDecimal payout){
+        this.payout = payout;
+    }
+
+    public BigDecimal getPayout(){
+        return this.payout;
+    }
+
 }

@@ -1,19 +1,19 @@
 package com.predictionmarket.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.predictionmarket.model.Bet;
 import com.predictionmarket.model.Market;
 import com.predictionmarket.model.User;
 import com.predictionmarket.repository.BetRepository;
 import com.predictionmarket.repository.MarketRepository;
 import com.predictionmarket.repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
 @Service
 public class MarketService {
@@ -88,6 +88,10 @@ public class MarketService {
 
                     BigDecimal payout = bet.getAmount().divide(winningPool, 8, RoundingMode.HALF_UP).multiply(totalPool);
 
+                    // update bet state
+                    bet.setPayout(payout);
+                    bet.setWon(true);
+
                     user.setBalance(user.getBalance().add(payout));
                     userRepository.save(user);
                 }
@@ -96,5 +100,8 @@ public class MarketService {
 
         // save market state
         marketRepository.save(market);
+
+        // save bet state
+        betRepository.saveAll(bets);
     }
 }
