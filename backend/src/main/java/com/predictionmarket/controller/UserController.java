@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.predictionmarket.dto.LeaderboardEntryDTO;
 import com.predictionmarket.model.User;
+import com.predictionmarket.service.BetService;
 import com.predictionmarket.service.UserService;
 
 @RestController
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private BetService betService;
+
 
     @PostMapping("/register")
     public User register(@RequestBody User user) {
@@ -55,5 +59,15 @@ public class UserController {
     @GetMapping("/leaderboard")
     public List<LeaderboardEntryDTO> getLeaderboard(){
         return userService.getLeaderboard().stream().map(user -> new LeaderboardEntryDTO(user.getId(), user.getUsername(), user.getBalance())).collect(Collectors.toList());
+    }
+
+    @GetMapping("/leaderboard/winnings")
+    public List<LeaderboardEntryDTO> getLeaderboardByWinnings(){
+        return betService.getLeaderboardByWinningsDesc();
+    }
+
+    @GetMapping("/leaderboard/losses")
+    public List<LeaderboardEntryDTO> getLeaderboardByLosses(){
+        return betService.getLeaderboardByLossesDesc();
     }
 }

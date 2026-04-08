@@ -1,18 +1,20 @@
 package com.predictionmarket.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.predictionmarket.dto.LeaderboardEntryDTO;
 import com.predictionmarket.model.Bet;
 import com.predictionmarket.model.Market;
 import com.predictionmarket.model.User;
 import com.predictionmarket.repository.BetRepository;
 import com.predictionmarket.repository.MarketRepository;
 import com.predictionmarket.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class BetService {
@@ -81,5 +83,13 @@ public class BetService {
         // Save
         userRepository.save(user);
         return betRepository.save(bet);
+    }
+
+    public List<LeaderboardEntryDTO> getLeaderboardByWinningsDesc(){
+        return betRepository.getWinningsByDesc();
+    }
+
+    public List<LeaderboardEntryDTO> getLeaderboardByLossesDesc(){
+        return betRepository.getLossesByDesc();
     }
 }
