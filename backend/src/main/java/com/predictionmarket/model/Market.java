@@ -1,7 +1,15 @@
 package com.predictionmarket.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "markets")
@@ -27,8 +35,16 @@ public class Market {
     @Enumerated(EnumType.STRING)
     private Bet.BetSide winningSide;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
+    private MarketCategory category = MarketCategory.OTHER;
+
     public enum MarketStatus {
         OPEN, CLOSED
+    }
+
+    public enum MarketCategory{
+        ACADEMICS, SPORTS, CAMPUS_LIFE, OTHER
     }
 
     public Long getId() { 
@@ -67,5 +83,13 @@ public class Market {
 
     public void setWinningSide(Bet.BetSide winningSide) {
         this.winningSide = winningSide;
+    }
+
+    public MarketCategory getMarketCategory(){
+        return this.category;
+    }
+
+    public void setMarketCategory(MarketCategory category){
+        this.category = category;
     }
 }
