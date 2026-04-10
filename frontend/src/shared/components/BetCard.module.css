@@ -1,0 +1,87 @@
+/* Card */
+.card {
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s;
+}
+.card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.question {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.optionLeft {
+  flex: 1;
+}
+.optionLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+.barTrack {
+  height: 6px;
+  background-color: var(--color-surface-alt);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: var(--color-primary);
+  transition: width 0.3s;
+}
+.percent {
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+  color: var(--color-text-secondary);
+}
+.percentHigh {
+  color: var(--color-primary);
+}
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+.betBtn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.betBtn:hover {
+  background-color: var(--color-primary-dark);
+}
