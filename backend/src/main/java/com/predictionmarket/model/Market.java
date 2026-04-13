@@ -1,5 +1,6 @@
 package com.predictionmarket.model;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -43,6 +44,12 @@ public class Market {
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
     private MarketCategory category = MarketCategory.OTHER;
+
+    @Column(nullable=false, columnDefinition="decimal(10,2) default 0.00")
+    private BigDecimal totalYesAmt = BigDecimal.ZERO;
+
+    @Column(nullable=false, columnDefinition="decimal(10,2) default 0.00")
+    private BigDecimal totalNoAmt = BigDecimal.ZERO;
 
     public enum MarketStatus {
         OPEN, CLOSED
@@ -106,4 +113,21 @@ public class Market {
     public void setMarketCategory(MarketCategory category){
         this.category = category;
     }
+
+    public BigDecimal getTotalYesAmt(){
+        return this.totalYesAmt;
+    }
+
+    public void setTotalYesAmt(BigDecimal totalYesAmt){
+        this.totalYesAmt = this.totalYesAmt.add(totalYesAmt);
+    }
+
+    public BigDecimal getTotalNoAmt(){
+        return this.totalNoAmt;
+    }
+
+    public void setTotalNoAmt(BigDecimal totalNoAmt){
+        this.totalNoAmt = this.totalNoAmt.add(totalNoAmt);
+    }
+
 }

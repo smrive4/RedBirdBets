@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.predictionmarket.dto.LeaderboardEntryDTO;
 import com.predictionmarket.model.Bet;
+import com.predictionmarket.model.Bet.BetSide;
 import com.predictionmarket.model.Market;
 import com.predictionmarket.model.User;
 import com.predictionmarket.repository.BetRepository;
@@ -76,12 +77,21 @@ public class BetService {
         // Deduct balance
         user.setBalance(user.getBalance().subtract(bet.getAmount()));
 
+        // Update market's total of Yes' or No'
+        if (bet.getSide() == BetSide.YES) {
+            market.setTotalYesAmt(bet.getAmount());
+        }
+        else if (bet.getSide() == BetSide.NO){
+            market.setTotalNoAmt(bet.getAmount());
+        }
+
         // Set relationships + timestamp
         bet.setUser(user);
         bet.setMarket(market);
         bet.setPlacedAt(LocalDateTime.now());
 
         // Save
+        marketRepository.save(market);
         userRepository.save(user);
         return betRepository.save(bet);
     }

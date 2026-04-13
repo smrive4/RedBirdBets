@@ -1,8 +1,8 @@
 import styles from './BetCard.module.css'
 
 function BetCard({ bet, onBet }) {
-  const totalYes = bet.totalYes || 0
-  const totalNo = bet.totalNo || 0
+  const totalYes = bet.totalYesAmt || 0
+  const totalNo = bet.totalNoAmt || 0
   const total = totalYes + totalNo
   const yesPercent = total === 0 ? 50 : Math.round((totalYes / total) * 100)
   const noPercent = 100 - yesPercent
