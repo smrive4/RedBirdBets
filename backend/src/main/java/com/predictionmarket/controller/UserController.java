@@ -70,4 +70,9 @@ public class UserController {
     public List<LeaderboardEntryDTO> getLeaderboardByLosses(){
         return betService.getLeaderboardByLossesDesc();
     }
+
+    @GetMapping("/leaderboard/monthly-losses")
+    public List<LeaderboardEntryDTO> getLeaderboardByMonthlyLosses(){
+        return betService.getLeaderboardByMonthlyLossesDesc();
+    }
 }

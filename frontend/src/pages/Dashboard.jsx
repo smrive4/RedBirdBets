@@ -3,65 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../features/auth/AuthContext'
 import styles from './Dashboard.module.css'
 
-function BetCard({ bet, onBet }) {
-  const totalYes = bet.totalYes || 0
-  const totalNo = bet.totalNo || 0
-  const total = totalYes + totalNo
-  const yesPercent = total === 0 ? 50 : Math.round((totalYes / total) * 100)
-  const noPercent = 100 - yesPercent
-
-  return (
-    <div className={styles.card}>
-      <p className={styles.question}>{bet.title}</p>
-      {bet.description && (
-        <p
-          style={{
-            fontSize: '13px',
-            color: 'var(--color-text-secondary)',
-            margin: 0,
-          }}
-        >
-          {bet.description}
-        </p>
-      )}
-      <div className={styles.options}>
-        {[
-          { label: 'YES', percent: yesPercent },
-          { label: 'NO', percent: noPercent },
-        ].map((opt) => (
-          <div key={opt.label} className={styles.optionRow}>
-            <div className={styles.optionLeft}>
-              <span className={styles.optionLabel}>{opt.label}</span>
-              <div className={styles.barTrack}>
-                <div
-                  className={styles.barFill}
-                  style={{ width: `${opt.percent}%` }}
-                />
-              </div>
-            </div>
-            <span
-              className={`${styles.percent} ${opt.percent >= 50 ? styles.percentHigh : ''}`}
-            >
-              {opt.percent}%
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className={styles.cardFooter}>
-        <button className={styles.betBtn} onClick={() => onBet(bet)}>
-          Place Bet
-        </button>
-      </div>
-    </div>
-  )
-}
+import CategorySection from '../shared/components/CategorySection'
+import Leaderboard from '../shared/components/Leaderboard'
+import { useMarkets } from '../features/markets/useMarket'
+import BetCard from '../shared/components/BetCard'
 
 export default function Dashboard() {
   const navigate = useNavigate()
   const { user, login, logout } = useAuth()
 
-  const [markets, setMarkets] = useState([])
-  const [loadingMarkets, setLoadingMarkets] = useState(true)
   const [modal, setModal] = useState(null)
   const [selectedOption, setSelectedOption] = useState(null)
   const [betAmount, setBetAmount] = useState('')
@@ -69,15 +19,15 @@ export default function Dashboard() {
   const [betLoading, setBetLoading] = useState(false)
   const [betError, setBetError] = useState(null)
 
-  useEffect(() => {
-    fetch('http://localhost:8080/api/markets')
-      .then((res) => res.json())
-      .then((data) => {
-        setMarkets(data.filter((m) => m.status === 'OPEN'))
-        setLoadingMarkets(false)
-      })
-      .catch(() => setLoadingMarkets(false))
-  }, [])
+  const {
+    markets,
+    academicMarkets,
+    sportMarkets,
+    campusMarkets,
+    otherMarkets,
+    recentlyCreatedMarkets,
+    loading,
+  } = useMarkets()
 
   const openModal = (market) => {
     setModal(market)
@@ -168,34 +118,68 @@ export default function Dashboard() {
         <p>Browse open markets, place bets, and climb the leaderboard.</p>
       </div>
 
-      <div className={styles.content}>
-        {loadingMarkets ? (
-          <p
-            style={{
-              textAlign: 'center',
-              color: 'var(--color-text-muted)',
-              padding: '40px',
-            }}
-          >
-            Loading markets...
-          </p>
-        ) : markets.length === 0 ? (
-          <p
-            style={{
-              textAlign: 'center',
-              color: 'var(--color-text-muted)',
-              padding: '40px',
-            }}
-          >
-            No open markets right now.
-          </p>
-        ) : (
-          <div className={styles.grid}>
-            {markets.map((market) => (
-              <BetCard key={market.id} bet={market} onBet={openModal} />
-            ))}
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div>
+            {loading ? (
+              <p
+                style={{
+                  textAlign: 'center',
+                  color: 'var(--color-text-muted)',
+                  padding: '40px',
+                }}
+              >
+                Loading markets...
+              </p>
+            ) : markets.length === 0 ? (
+              <p
+                style={{
+                  textAlign: 'center',
+                  color: 'var(--color-text-muted)',
+                  padding: '40px',
+                }}
+              >
+                No open markets right now.
+              </p>
+            ) : (
+              <>
+                <CategorySection
+                  title="Campus Life"
+                  markets={campusMarkets}
+                  onBet={openModal}
+                />
+                <CategorySection
+                  title="Academics"
+                  markets={academicMarkets}
+                  onBet={openModal}
+                />
+                <CategorySection
+                  title="Sports"
+                  markets={sportMarkets}
+                  onBet={openModal}
+                />
+                <CategorySection
+                  title="Other"
+                  markets={otherMarkets}
+                  onBet={openModal}
+                />
+              </>
+            )}
           </div>
-        )}
+        </div>
+        <div className={styles.sidebar}>
+          <div className={styles.title}>This Months Biggest Lossers</div>
+          <Leaderboard url="http://localhost:8080/api/users/leaderboard/monthly-losses" />
+
+          <div className={styles.title}>Recently Created Bets</div>
+          {recentlyCreatedMarkets.map((m) => {
+            return (
+              <div className={styles.margin}>
+                <BetCard key={m.id} bet={m} onBet={openModal} />
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {modal && (

@@ -6,6 +6,19 @@
   color: var(--color-text-primary);
 }
 
+/* */
+.container {
+  display: flex;
+  gap: 96px;
+  max-width: 1400px;
+  padding: 28px 18px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  width: 350px;
+}
+
 /* Navbar */
 .navbar {
   display: flex;
@@ -90,9 +103,7 @@
 
 /* Content */
 .content {
-  padding: 24px 32px;
-  max-width: 1200px;
-  margin: 0 auto;
+  flex: 1;
 }
 .section {
   margin-bottom: 40px;
@@ -126,6 +137,14 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
+}
+
+/* Category Title */
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  margin-top: 12px;
 }
 
 /* Card */
@@ -390,4 +409,8 @@
 }
 .navLink:hover {
   color: var(--color-primary);
+}
+
+.margin {
+  margin-bottom: 24px;
 }

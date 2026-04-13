@@ -2,6 +2,7 @@ package com.predictionmarket.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,5 +92,10 @@ public class BetService {
 
     public List<LeaderboardEntryDTO> getLeaderboardByLossesDesc(){
         return betRepository.getLossesByDesc();
+    }
+
+    public List<LeaderboardEntryDTO> getLeaderboardByMonthlyLossesDesc(){
+        LocalDateTime dt = LocalDateTime.now();
+        return betRepository.getLossesByMonthlyDesc(dt.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS));
     }
 }
