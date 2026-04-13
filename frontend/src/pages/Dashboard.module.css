@@ -6,6 +6,19 @@
   color: var(--color-text-primary);
 }
 
+/* */
+.container {
+  display: flex;
+  gap: 48px;
+  max-width: 1600px;
+  padding: 28px 18px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  width: 350px;
+}
+
 /* Navbar */
 .navbar {
   display: flex;
@@ -90,9 +103,7 @@
 
 /* Content */
 .content {
-  padding: 24px 32px;
-  max-width: 1200px;
-  margin: 0 auto;
+  flex: 1;
 }
 .section {
   margin-bottom: 40px;
@@ -129,7 +140,7 @@
 }
 
 /* Category Title */
-.categoryTitle {
+.title {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 12px;
@@ -398,4 +409,8 @@
 }
 .navLink:hover {
   color: var(--color-primary);
+}
+
+.margin {
+  margin-bottom: 24px;
 }

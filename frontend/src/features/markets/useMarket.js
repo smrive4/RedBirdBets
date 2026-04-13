@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
 
+function getRecentlyCreated(markets) {
+  let recMarkets = markets.filter((m) => m.createdAt != null)
+
+  recMarkets = recMarkets
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+    )
+    .slice(0, 3)
+
+  return recMarkets
+}
+
 export function useMarkets() {
   const [markets, setMarkets] = useState([])
   const [loading, setLoading] = useState(true)
@@ -23,12 +36,15 @@ export function useMarkets() {
   )
   const otherMarkets = markets.filter((m) => m.marketCategory === 'OTHER')
 
+  const recentlyCreatedMarkets = getRecentlyCreated(markets)
+
   return {
     markets,
     academicMarkets,
     sportMarkets,
     campusMarkets,
     otherMarkets,
+    recentlyCreatedMarkets,
     loading,
   }
 }

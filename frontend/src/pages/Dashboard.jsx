@@ -4,7 +4,9 @@ import { useAuth } from '../features/auth/AuthContext'
 import styles from './Dashboard.module.css'
 
 import CategorySection from '../shared/components/CategorySection'
+import Leaderboard from '../shared/components/Leaderboard'
 import { useMarkets } from '../features/markets/useMarket'
+import BetCard from '../shared/components/BetCard'
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -23,6 +25,7 @@ export default function Dashboard() {
     sportMarkets,
     campusMarkets,
     otherMarkets,
+    recentlyCreatedMarkets,
     loading,
   } = useMarkets()
 
@@ -115,51 +118,68 @@ export default function Dashboard() {
         <p>Browse open markets, place bets, and climb the leaderboard.</p>
       </div>
 
-      <div className={styles.content}>
-        {loading ? (
-          <p
-            style={{
-              textAlign: 'center',
-              color: 'var(--color-text-muted)',
-              padding: '40px',
-            }}
-          >
-            Loading markets...
-          </p>
-        ) : markets.length === 0 ? (
-          <p
-            style={{
-              textAlign: 'center',
-              color: 'var(--color-text-muted)',
-              padding: '40px',
-            }}
-          >
-            No open markets right now.
-          </p>
-        ) : (
-          <>
-            <CategorySection
-              title="Campus Life"
-              markets={campusMarkets}
-              onBet={openModal}
-            />
-            <CategorySection
-              title="Academics"
-              markets={academicMarkets}
-              onBet={openModal}
-            />
-            <CategorySection
-              title="Sports"
-              markets={sportMarkets}
-              onBet={openModal}
-            />
-            <CategorySection
-              title="Other"
-              markets={otherMarkets}
-              onBet={openModal}
-            />
-          </>
-        )}
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div>
+            {loading ? (
+              <p
+                style={{
+                  textAlign: 'center',
+                  color: 'var(--color-text-muted)',
+                  padding: '40px',
+                }}
+              >
+                Loading markets...
+              </p>
+            ) : markets.length === 0 ? (
+              <p
+                style={{
+                  textAlign: 'center',
+                  color: 'var(--color-text-muted)',
+                  padding: '40px',
+                }}
+              >
+                No open markets right now.
+              </p>
+            ) : (
+              <>
+                <CategorySection
+                  title="Campus Life"
+                  markets={campusMarkets}
+                  onBet={openModal}
+                />
+                <CategorySection
+                  title="Academics"
+                  markets={academicMarkets}
+                  onBet={openModal}
+                />
+                <CategorySection
+                  title="Sports"
+                  markets={sportMarkets}
+                  onBet={openModal}
+                />
+                <CategorySection
+                  title="Other"
+                  markets={otherMarkets}
+                  onBet={openModal}
+                />
+              </>
+            )}
+          </div>
+        </div>
+        <div className={styles.sidebar}>
+          <div className={styles.title}>This Weeks Biggest Lossers</div>
+          <Leaderboard />
+
+          <div className={styles.title}>Recently Created Bets</div>
+          {recentlyCreatedMarkets.map((m) => {
+            return (
+              <div className={styles.margin}>
+                <BetCard key={m.id} bet={m} onBet={openModal} />
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {modal && (

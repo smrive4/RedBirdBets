@@ -1,9 +1,8 @@
 package com.predictionmarket.repository;
 
-import com.predictionmarket.model.Market;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+
+import com.predictionmarket.model.Market;
 
 public interface MarketRepository extends JpaRepository<Market, Long> {
-    //
 }

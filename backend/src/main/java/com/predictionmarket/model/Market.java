@@ -1,5 +1,6 @@
 package com.predictionmarket.model;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,6 +26,9 @@ public class Market {
 
     @Column(length = 2000)
     private String description;
+
+    @Column(updatable = false)
+    private Instant createdAt;
 
     @Column(nullable=false)
     private LocalDateTime closeTime;
@@ -63,6 +68,15 @@ public class Market {
     }
     public void setDescription(String description) { 
         this.description = description; 
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = Instant.now();
+    }
+
+    public Instant getCreatedAt(){
+        return this.createdAt;
     }
 
     public LocalDateTime getCloseTime() { return closeTime; }
