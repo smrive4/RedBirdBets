@@ -39,58 +39,66 @@ public class MarketService {
 
     // Get market by ID
     public Market getMarketById(Long id) {
-        return marketRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Market not found"));
+        return marketRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Market not found"));
     }
 
-    // Close market manually (optional utility)
+    // Close market without payout
     public Market closeMarket(Long id) {
         Market market = getMarketById(id);
         market.setStatus(Market.MarketStatus.CLOSED);
         return marketRepository.save(market);
     }
 
-    // Resolve market + payout
+    // Resolve market + dynamic payout
     @Transactional
     public void resolveMarket(Long marketId, Bet.BetSide winningSide) {
 
-        Market market = marketRepository.findById(marketId).orElseThrow(() -> new IllegalArgumentException("Market not found"));
+        Market market = marketRepository.findById(marketId)
+                .orElseThrow(() -> new IllegalArgumentException("Market not found"));
 
+        // Ensure market is open
         if (market.getStatus() != Market.MarketStatus.OPEN) {
             throw new IllegalStateException("Market already closed");
         }
 
-        // set result
+        // Set result
         market.setWinningSide(winningSide);
         market.setStatus(Market.MarketStatus.CLOSED);
 
-        // get all bets
         List<Bet> bets = betRepository.findByMarketId(marketId);
 
-        BigDecimal totalPool = BigDecimal.ZERO;
-        BigDecimal winningPool = BigDecimal.ZERO;
+        // Use stored totals instead of recalculating
+        BigDecimal totalPool = market.getTotalYesAmt().add(market.getTotalNoAmt());
 
-        // calculate pools
+        BigDecimal winningPool = (winningSide == Bet.BetSide.YES)
+                ? market.getTotalYesAmt()
+                : market.getTotalNoAmt();
+
+        // Reset all bets
         for (Bet bet : bets) {
-            totalPool = totalPool.add(bet.getAmount());
-
-            if (bet.getSide() == winningSide) {
-                winningPool = winningPool.add(bet.getAmount());
-            }
+            bet.setWon(false);
+            bet.setPayout(BigDecimal.ZERO);
         }
 
-        // payout if winners exist
+        // Pay winners proportionally
         if (winningPool.compareTo(BigDecimal.ZERO) > 0) {
 
             for (Bet bet : bets) {
                 if (bet.getSide() == winningSide) {
 
-                    User user = bet.getUser();
+                    BigDecimal payout = bet.getAmount()
+                            .multiply(totalPool)
+                            .divide(winningPool, 2, RoundingMode.HALF_UP);
 
-                    BigDecimal payout = bet.getAmount().divide(winningPool, 8, RoundingMode.HALF_UP).multiply(totalPool);
-
-                    // update bet state
                     bet.setPayout(payout);
                     bet.setWon(true);
+
+                    User user = bet.getUser();
+
+                    if (user.getBalance() == null) {
+                        user.setBalance(BigDecimal.ZERO);
+                    }
 
                     user.setBalance(user.getBalance().add(payout));
                     userRepository.save(user);
@@ -98,10 +106,31 @@ public class MarketService {
             }
         }
 
-        // save market state
+        // Save updates
         marketRepository.save(market);
-
-        // save bet state
         betRepository.saveAll(bets);
+    }
+
+    // Optional: get live odds
+    public BigDecimal getYesMultiplier(Long marketId) {
+        Market market = getMarketById(marketId);
+        BigDecimal total = market.getTotalYesAmt().add(market.getTotalNoAmt());
+
+        if (market.getTotalYesAmt().compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return total.divide(market.getTotalYesAmt(), 2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getNoMultiplier(Long marketId) {
+        Market market = getMarketById(marketId);
+        BigDecimal total = market.getTotalYesAmt().add(market.getTotalNoAmt());
+
+        if (market.getTotalNoAmt().compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return total.divide(market.getTotalNoAmt(), 2, RoundingMode.HALF_UP);
     }
 }

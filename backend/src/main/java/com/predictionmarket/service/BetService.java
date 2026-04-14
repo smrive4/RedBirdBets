@@ -42,34 +42,35 @@ public class BetService {
         return betRepository.findByMarketId(marketId);
     }
 
-
     @Transactional
     public Bet createBet(Long userId, Long marketId, Bet bet) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Market market = marketRepository.findById(marketId).orElseThrow(() -> new IllegalArgumentException("Market not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Validate market is OPEN
+        Market market = marketRepository.findById(marketId)
+                .orElseThrow(() -> new IllegalArgumentException("Market not found"));
+
+        // Ensure market is open
         if (market.getStatus() != Market.MarketStatus.OPEN) {
             throw new IllegalStateException("Market is closed");
         }
 
-        // Validate bet amount
+        // Validate bet
         if (bet.getAmount() == null || bet.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Bet amount must be greater than 0");
         }
 
-        // Validate bet side
         if (bet.getSide() == null) {
             throw new IllegalArgumentException("Bet side must be YES or NO");
         }
 
-        // Ensure balance is not null
+        // Ensure balance exists
         if (user.getBalance() == null) {
             user.setBalance(BigDecimal.ZERO);
         }
 
-        // Validate balance
+        // Check balance
         if (user.getBalance().compareTo(bet.getAmount()) < 0) {
             throw new IllegalStateException("Insufficient balance");
         }
@@ -77,20 +78,21 @@ public class BetService {
         // Deduct balance
         user.setBalance(user.getBalance().subtract(bet.getAmount()));
 
-        // Update market's total of Yes' or No'
+        // Update market totals (dynamic odds tracking)
         if (bet.getSide() == BetSide.YES) {
-            market.setTotalYesAmt(bet.getAmount());
-        }
-        else if (bet.getSide() == BetSide.NO){
-            market.setTotalNoAmt(bet.getAmount());
+            market.addToTotalYesAmt(bet.getAmount());
+        } else {
+            market.addToTotalNoAmt(bet.getAmount());
         }
 
-        // Set relationships + timestamp
+        // Set bet info
         bet.setUser(user);
         bet.setMarket(market);
         bet.setPlacedAt(LocalDateTime.now());
+        bet.setWon(false);
+        bet.setPayout(BigDecimal.ZERO);
 
-        // Save
+        // Save updates
         marketRepository.save(market);
         userRepository.save(user);
         return betRepository.save(bet);
@@ -106,6 +108,8 @@ public class BetService {
 
     public List<LeaderboardEntryDTO> getLeaderboardByMonthlyLossesDesc(){
         LocalDateTime dt = LocalDateTime.now();
-        return betRepository.getLossesByMonthlyDesc(dt.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS));
+        return betRepository.getLossesByMonthlyDesc(
+            dt.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS)
+        );
     }
 }

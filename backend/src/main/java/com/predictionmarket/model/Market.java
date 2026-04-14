@@ -22,7 +22,7 @@ public class Market {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String title;
 
     @Column(length = 2000)
@@ -31,50 +31,32 @@ public class Market {
     @Column(updatable = false)
     private Instant createdAt;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private LocalDateTime closeTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     private MarketStatus status = MarketStatus.OPEN;
 
     @Enumerated(EnumType.STRING)
     private Bet.BetSide winningSide;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     private MarketCategory category = MarketCategory.OTHER;
 
-    @Column(nullable=false, columnDefinition="decimal(10,2) default 0.00")
+    @Column(nullable = false, columnDefinition = "decimal(10,2) default 0.00")
     private BigDecimal totalYesAmt = BigDecimal.ZERO;
 
-    @Column(nullable=false, columnDefinition="decimal(10,2) default 0.00")
+    @Column(nullable = false, columnDefinition = "decimal(10,2) default 0.00")
     private BigDecimal totalNoAmt = BigDecimal.ZERO;
 
     public enum MarketStatus {
         OPEN, CLOSED
     }
 
-    public enum MarketCategory{
+    public enum MarketCategory {
         ACADEMICS, SPORTS, CAMPUS_LIFE, OTHER
-    }
-
-    public Long getId() { 
-        return id; 
-    }
-
-    public String getTitle() { 
-        return title; 
-    }
-    public void setTitle(String title) { 
-        this.title = title; 
-    }
-
-    public String getDescription() { 
-        return description; 
-    }
-    public void setDescription(String description) { 
-        this.description = description; 
     }
 
     @PrePersist
@@ -82,20 +64,44 @@ public class Market {
         this.createdAt = Instant.now();
     }
 
-    public Instant getCreatedAt(){
-        return this.createdAt;
+    public Long getId() {
+        return id;
     }
 
-    public LocalDateTime getCloseTime() { return closeTime; }
-    public void setCloseTime(LocalDateTime closeTime) { 
-        this.closeTime = closeTime; 
+    public String getTitle() {
+        return title;
     }
 
-    public MarketStatus getStatus() { 
-        return status; 
+    public void setTitle(String title) {
+        this.title = title;
     }
-    public void setStatus(MarketStatus status) { 
-        this.status = status; 
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(LocalDateTime closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public MarketStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MarketStatus status) {
+        this.status = status;
     }
 
     public Bet.BetSide getWinningSide() {
@@ -106,28 +112,43 @@ public class Market {
         this.winningSide = winningSide;
     }
 
-    public MarketCategory getMarketCategory(){
-        return this.category;
+    public MarketCategory getMarketCategory() {
+        return category;
     }
 
-    public void setMarketCategory(MarketCategory category){
+    public void setMarketCategory(MarketCategory category) {
         this.category = category;
     }
 
-    public BigDecimal getTotalYesAmt(){
-        return this.totalYesAmt;
+    public BigDecimal getTotalYesAmt() {
+        return totalYesAmt;
     }
 
-    public void setTotalYesAmt(BigDecimal totalYesAmt){
-        this.totalYesAmt = this.totalYesAmt.add(totalYesAmt);
+    public void setTotalYesAmt(BigDecimal totalYesAmt) {
+        this.totalYesAmt = totalYesAmt;
     }
 
-    public BigDecimal getTotalNoAmt(){
-        return this.totalNoAmt;
+    public BigDecimal getTotalNoAmt() {
+        return totalNoAmt;
     }
 
-    public void setTotalNoAmt(BigDecimal totalNoAmt){
-        this.totalNoAmt = this.totalNoAmt.add(totalNoAmt);
+    public void setTotalNoAmt(BigDecimal totalNoAmt) {
+        this.totalNoAmt = totalNoAmt;
     }
 
+    public void addToTotalYesAmt(BigDecimal amount) {
+        if (amount != null) {
+            this.totalYesAmt = this.totalYesAmt.add(amount);
+        }
+    }
+
+    public void addToTotalNoAmt(BigDecimal amount) {
+        if (amount != null) {
+            this.totalNoAmt = this.totalNoAmt.add(amount);
+        }
+    }
+
+    public BigDecimal getTotalPool() {
+        return totalYesAmt.add(totalNoAmt);
+    }
 }
