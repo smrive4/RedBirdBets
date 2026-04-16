@@ -56,6 +56,11 @@ public class UserController {
         return userService.promoteToAdmin(id);
     }
 
+    @PostMapping("/{id}/claim-daily-reward")
+    public User claimDailyReward(@PathVariable Long id) {
+        return userService.claimDailyReward(id);
+    }
+
     @GetMapping("/leaderboard/balance")
     public List<LeaderboardEntryDTO> getLeaderboard(){
         return userService.getLeaderboard().stream().map(user -> new LeaderboardEntryDTO(user.getId(), user.getUsername(), user.getBalance())).collect(Collectors.toList());

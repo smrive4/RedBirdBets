@@ -18,6 +18,37 @@ export default function Dashboard() {
   const [toast, setToast] = useState(null)
   const [betLoading, setBetLoading] = useState(false)
   const [betError, setBetError] = useState(null)
+  const [claimLoading, setClaimLoading] = useState(false)
+  const [claimedToday, setClaimedToday] = useState(false)
+
+  const today = new Date().toISOString().split('T')[0]
+  const alreadyClaimed = claimedToday || user?.lastDailyClaimDate === today
+
+  const handleClaimDaily = async () => {
+    setClaimLoading(true)
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/users/${user.id}/claim-daily-reward`,
+        { method: 'POST' }
+      )
+      if (response.status === 409) {
+        setClaimedToday(true)
+        return
+      }
+      if (!response.ok) throw new Error('Failed to claim reward')
+      const updatedUser = await response.json()
+      login(updatedUser)
+      setClaimedToday(true)
+      setToast('250 coins claimed!')
+      setTimeout(() => setToast(null), 3000)
+    } catch (err) {
+      
+    } finally {
+      setClaimLoading(false)
+    }
+  }
+
+
 
   const {
     markets,
@@ -50,7 +81,7 @@ export default function Dashboard() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: parseFloat(betAmount),
-            side: selectedOption,
+            selectedOption: { id: selectedOption.id },
           }),
         }
       )
@@ -66,7 +97,7 @@ export default function Dashboard() {
       login(updatedUser)
 
       setModal(null)
-      setToast(`Bet placed! ${betAmount} coins on "${selectedOption}"`)
+      setToast(`Bet placed! ${betAmount} coins on "${selectedOption.optionName}"`)
       setTimeout(() => setToast(null), 3000)
     } catch (err) {
       setBetError(err.message)
@@ -92,6 +123,14 @@ export default function Dashboard() {
             🪙 <strong>{Number(user?.balance || 0).toLocaleString()}</strong>{' '}
             coins
           </div>
+          <button
+            onClick={handleClaimDaily}
+            disabled={alreadyClaimed || claimLoading}
+            className={styles.claimBtn}
+            title={alreadyClaimed ? 'Come back tomorrow for more coins' : 'Claim your daily 250 coins'}
+          >
+            {alreadyClaimed ? 'Claimed' : claimLoading ? 'Claiming...' : '+ Daily Coins'}
+          </button>
           <button
             onClick={() => {
               logout()
@@ -192,13 +231,13 @@ export default function Dashboard() {
 
             <p className={styles.modalLabel}>Choose outcome</p>
             <div className={styles.modalOptions}>
-              {['YES', 'NO'].map((opt) => (
+              {modal.options.map((opt) => (
                 <button
-                  key={opt}
+                  key={opt.id}
                   onClick={() => setSelectedOption(opt)}
-                  className={`${styles.optionBtn} ${selectedOption === opt ? styles.optionBtnActive : ''}`}
+                  className={`${styles.optionBtn} ${selectedOption?.id === opt.id ? styles.optionBtnActive : ''}`}
                 >
-                  {opt}
+                  {opt.optionName}
                 </button>
               ))}
             </div>

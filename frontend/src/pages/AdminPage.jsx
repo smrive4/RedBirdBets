@@ -54,6 +54,7 @@ export default function AdminPage() {
     marketCategory: '',
   })
   const [error, setError] = useState(null)
+  const [options, setOptions] = useState(['', ''])
   const [success, setSuccess] = useState(null)
 
   const showSuccess = (msg) => {
@@ -72,27 +73,34 @@ export default function AdminPage() {
   }, [])
 
   const handleCreate = async (e) => {
-    e.preventDefault()
-    setError(null)
-    try {
-      const res = await fetch(`${BASE}/api/markets?requesterId=${user.id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: form.title,
-          description: form.description,
-          closeTime: form.closeTime,
-          marketCategory: form.marketCategory,
-        }),
-      })
-      if (!res.ok) throw new Error(await res.text())
-      setForm({ title: '', description: '', closeTime: '', marketCategory: '' })
-      loadMarkets()
-      showSuccess('Market created!')
-    } catch (err) {
-      setError(err.message)
-    }
+  e.preventDefault()
+  setError(null)
+  const filledOptions = options.map((o) => o.trim()).filter((o) => o !== '')
+  if (filledOptions.length < 2) {
+    setError('Please provide at least 2 options.')
+    return
   }
+  try {
+    const res = await fetch(`${BASE}/api/markets?requesterId=${user.id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: form.title,
+        description: form.description,
+        closeTime: form.closeTime,
+        marketCategory: form.marketCategory,
+        options: filledOptions.map((name) => ({ optionName: name })),
+      }),
+    })
+    if (!res.ok) throw new Error(await res.text())
+    setForm({ title: '', description: '', closeTime: '', marketCategory: '' })
+    setOptions(['', ''])
+    loadMarkets()
+    showSuccess('Market created!')
+  } catch (err) {
+    setError(err.message)
+  }
+}
 
   const handleClose = async (id) => {
     try {
@@ -113,7 +121,7 @@ export default function AdminPage() {
   const handleResolve = async (id, winningSide) => {
     try {
       const res = await fetch(
-        `${BASE}/api/markets/${id}/resolve?winningSide=${winningSide}&requesterId=${user.id}`,
+        `${BASE}/api/markets/${id}/resolve?winningOptionId=${winningSide}&requesterId=${user.id}`,
         { method: 'POST' }
       )
       if (!res.ok) throw new Error(await res.text())
@@ -244,6 +252,39 @@ export default function AdminPage() {
               <option value="SPORTS">Sports</option>
               <option value="OTHER">Other</option>
             </select>
+            <label className={styles.label}>Options (min. 2)</label>
+            {options.map((opt, i) => (
+              <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                <input
+                  className={styles.inputStyle}
+                  style={{ marginBottom: 0, flex: 1 }}
+                  placeholder={`Option ${i + 1}`}
+                  value={opt}
+                  onChange={(e) => {
+                    const updated = [...options]
+                    updated[i] = e.target.value
+                    setOptions(updated)
+                  }}
+                />
+                {options.length > 2 && (
+                  <button
+                    type="button"
+                    style={{ ...dangerBtn, padding: '8px 12px' }}
+                    onClick={() => setOptions(options.filter((_, idx) => idx !== i))}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              style={{ ...secondaryBtn, marginBottom: '16px', fontSize: '13px', padding: '7px 14px' }}
+              onClick={() => setOptions([...options, ''])}
+            >
+              + Add Option
+            </button>
+            <br />
             <button style={btnStyle} type="submit">
               Create Market
             </button>
@@ -326,18 +367,15 @@ export default function AdminPage() {
                     <button style={dangerBtn} onClick={() => handleClose(m.id)}>
                       Close
                     </button>
-                    <button
-                      style={btnStyle}
-                      onClick={() => handleResolve(m.id, 'YES')}
-                    >
-                      Resolve YES
-                    </button>
-                    <button
-                      style={{ ...btnStyle, background: '#555' }}
-                      onClick={() => handleResolve(m.id, 'NO')}
-                    >
-                      Resolve NO
-                    </button>
+                    {m.options.map((opt) => (
+                      <button
+                        key={opt.id}
+                        style={btnStyle}
+                        onClick={() => handleResolve(m.id, opt.id)}
+                      >
+                        Resolve: {opt.optionName}
+                      </button>
+                    ))}
                   </>
                 )}
               </div>

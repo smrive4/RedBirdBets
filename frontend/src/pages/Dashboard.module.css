@@ -411,6 +411,27 @@
   color: var(--color-primary);
 }
 
+.claimBtn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-primary);
+  background-color: var(--color-primary);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+.claimBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+.claimBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .margin {
   margin-bottom: 24px;
 }

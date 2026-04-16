@@ -1,11 +1,8 @@
 import styles from './BetCard.module.css'
 
 function BetCard({ bet, onBet }) {
-  const totalYes = bet.totalYesAmt || 0
-  const totalNo = bet.totalNoAmt || 0
-  const total = totalYes + totalNo
-  const yesPercent = total === 0 ? 50 : Math.round((totalYes / total) * 100)
-  const noPercent = 100 - yesPercent
+  const options = bet.options || []
+  const total = options.reduce((sum, o) => sum + (o.totalAmount || 0), 0)
 
   return (
     <div className={styles.card}>
@@ -22,27 +19,29 @@ function BetCard({ bet, onBet }) {
         </p>
       )}
       <div className={styles.options}>
-        {[
-          { label: 'YES', percent: yesPercent },
-          { label: 'NO', percent: noPercent },
-        ].map((opt) => (
-          <div key={opt.label} className={styles.optionRow}>
-            <div className={styles.optionLeft}>
-              <span className={styles.optionLabel}>{opt.label}</span>
-              <div className={styles.barTrack}>
-                <div
-                  className={styles.barFill}
-                  style={{ width: `${opt.percent}%` }}
-                />
+        {options.map((opt) => {
+          const percent = total === 0
+            ? Math.round(100 / options.length)
+            : Math.round((opt.totalAmount / total) * 100)
+          return (
+            <div key={opt.id} className={styles.optionRow}>
+              <div className={styles.optionLeft}>
+                <span className={styles.optionLabel}>{opt.optionName}</span>
+                <div className={styles.barTrack}>
+                  <div
+                    className={styles.barFill}
+                    style={{ width: `${percent}%` }}
+                  />
+                </div>
               </div>
+              <span
+                className={`${styles.percent} ${percent >= 50 ? styles.percentHigh : ''}`}
+              >
+                {percent}%
+              </span>
             </div>
-            <span
-              className={`${styles.percent} ${opt.percent >= 50 ? styles.percentHigh : ''}`}
-            >
-              {opt.percent}%
-            </span>
-          </div>
-        ))}
+          )
+        })}
       </div>
       <div className={styles.cardFooter}>
         <button className={styles.betBtn} onClick={() => onBet(bet)}>
