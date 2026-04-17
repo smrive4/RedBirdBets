@@ -15,6 +15,12 @@
   height: 100vh;
 }
 
+.lh {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
 .lbContainer {
   max-width: 700px;
   margin: 0 auto;

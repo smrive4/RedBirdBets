@@ -29,15 +29,17 @@ function LeaderboardPage() {
   return (
     <div className={styles.background}>
       <nav className={styles.navbar}>
-        <div className={styles.brand} onClick={() => navigate('/')}>
-          REDBIRDBETS
+        <div className={styles.lh}>
+          <div className={styles.brand} onClick={() => navigate('/')}>
+            REDBIRDBETS
+          </div>
+          <button
+            onClick={() => navigate('/leaderboard')}
+            className={styles.navLink}
+          >
+            Leaderboard
+          </button>
         </div>
-        <button
-          onClick={() => navigate('/leaderboard')}
-          className={styles.navLink}
-        >
-          Leaderboard
-        </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div className={styles.balanceChip}>
             🪙 <strong>{Number(user?.balance || 0).toLocaleString()}</strong>{' '}
