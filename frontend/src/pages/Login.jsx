@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import styles from './Auth.module.css';
 import logo from "../assets/Logo.png";
 import { useAuth } from "../features/auth/AuthContext";
+import { API_BASE } from '../config'
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -19,7 +20,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/login-user?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+        `${API_BASE}/api/users/login-user?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
         { method: "POST" }
       );
 

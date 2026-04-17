@@ -7,6 +7,7 @@ import CategorySection from '../shared/components/CategorySection'
 import Leaderboard from '../shared/components/Leaderboard'
 import { useMarkets } from '../features/markets/useMarket'
 import BetCard from '../shared/components/BetCard'
+import { API_BASE } from '../config'
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -28,7 +29,7 @@ export default function Dashboard() {
     setClaimLoading(true)
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/${user.id}/claim-daily-reward`,
+        `${API_BASE}/api/users/${user.id}/claim-daily-reward`,
         { method: 'POST' }
       )
       if (response.status === 409) {
@@ -73,7 +74,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/bets/user/${user.id}/market/${modal.id}`,
+        `${API_BASE}/api/bets/user/${user.id}/market/${modal.id}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -90,7 +91,7 @@ export default function Dashboard() {
       }
 
       const updatedUser = await fetch(
-        `http://localhost:8080/api/users/${user.id}`
+        `${API_BASE}/api/users/${user.id}`
       ).then((r) => r.json())
       login(updatedUser)
 
@@ -220,7 +221,7 @@ export default function Dashboard() {
         <div className={styles.sidebar}>
           <div className={styles.title}>This Months Biggest Lossers</div>
           <Leaderboard
-            url="http://localhost:8080/api/users/leaderboard/monthly-losses"
+            url={`${API_BASE}/api/users/leaderboard/monthly-losses`}
             label="Amt. Lost"
           />
 

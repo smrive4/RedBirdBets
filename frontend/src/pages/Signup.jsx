@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from './Auth.module.css';
 import logo from "../assets/Logo.png";
+import { API_BASE } from '../config'
 
 function Signup() {
   const [form, setForm] = useState({
@@ -28,7 +29,7 @@ function Signup() {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/api/users/register", {
+      const response = await fetch(`${API_BASE}/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

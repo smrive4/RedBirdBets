@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../features/auth/AuthContext'
 import styles from './AdminPage.module.css'
-
-const BASE = 'http://localhost:8080'
+import { API_BASE } from '../config'
+const BASE = API_BASE
 
 // const Styles.inputStyle = {
 //   width: '100%',
