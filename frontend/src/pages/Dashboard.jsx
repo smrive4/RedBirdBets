@@ -42,13 +42,10 @@ export default function Dashboard() {
       setToast('250 coins claimed!')
       setTimeout(() => setToast(null), 3000)
     } catch (err) {
-      
     } finally {
       setClaimLoading(false)
     }
   }
-
-
 
   const {
     markets,
@@ -58,6 +55,7 @@ export default function Dashboard() {
     otherMarkets,
     recentlyCreatedMarkets,
     loading,
+    refresh,
   } = useMarkets()
 
   const openModal = (market) => {
@@ -97,7 +95,10 @@ export default function Dashboard() {
       login(updatedUser)
 
       setModal(null)
-      setToast(`Bet placed! ${betAmount} coins on "${selectedOption.optionName}"`)
+      refresh()
+      setToast(
+        `Bet placed! ${betAmount} coins on "${selectedOption.optionName}"`
+      )
       setTimeout(() => setToast(null), 3000)
     } catch (err) {
       setBetError(err.message)
@@ -127,9 +128,17 @@ export default function Dashboard() {
             onClick={handleClaimDaily}
             disabled={alreadyClaimed || claimLoading}
             className={styles.claimBtn}
-            title={alreadyClaimed ? 'Come back tomorrow for more coins' : 'Claim your daily 250 coins'}
+            title={
+              alreadyClaimed
+                ? 'Come back tomorrow for more coins'
+                : 'Claim your daily 250 coins'
+            }
           >
-            {alreadyClaimed ? 'Claimed' : claimLoading ? 'Claiming...' : '+ Daily Coins'}
+            {alreadyClaimed
+              ? 'Claimed'
+              : claimLoading
+                ? 'Claiming...'
+                : '+ Daily Coins'}
           </button>
           <button
             onClick={() => {

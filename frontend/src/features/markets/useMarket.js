@@ -16,6 +16,9 @@ function getRecentlyCreated(markets) {
 export function useMarkets() {
   const [markets, setMarkets] = useState([])
   const [loading, setLoading] = useState(true)
+  const [refetch, setRefetch] = useState(0)
+
+  const refresh = () => setRefetch((prev) => prev + 1)
 
   useEffect(() => {
     fetch('http://localhost:8080/api/markets')
@@ -25,7 +28,7 @@ export function useMarkets() {
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [])
+  }, [refetch])
 
   const academicMarkets = markets.filter(
     (m) => m.marketCategory === 'ACADEMICS'
@@ -46,5 +49,6 @@ export function useMarkets() {
     otherMarkets,
     recentlyCreatedMarkets,
     loading,
+    refresh,
   }
 }

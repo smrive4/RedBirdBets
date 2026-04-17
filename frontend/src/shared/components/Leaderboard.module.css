@@ -28,8 +28,7 @@
 }
 
 .rank {
-  /* color: var(--color-primary);
-  font-weight: bold; */
+  text-align: center;
 }
 
 .youTag {

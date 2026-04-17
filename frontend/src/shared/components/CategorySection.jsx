@@ -2,6 +2,10 @@ import styles from './CategorySection.module.css'
 import BetCard from './BetCard'
 
 function CategorySection({ title, markets, onBet }) {
+  if (markets.length == 0) {
+    return <></>
+  }
+
   return (
     <>
       <div className={styles.categoryTitle}>{title}</div>
