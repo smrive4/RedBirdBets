@@ -29,11 +29,12 @@ public class JwtUtil {
 
     }
 
-    public String createToken(String username){
+    public String createToken(String username, String role){
         Instant now = Instant.now();
         
         return Jwts.builder()
             .subject(username)
+            .claim("role", role)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(Duration.ofHours(8))))
             .signWith(key)
@@ -41,13 +42,23 @@ public class JwtUtil {
     }
 
     public String getUsername(String token){
-        Claims claim = Jwts.parser()
+        Claims claim = this.getClaim(token);
+
+        return claim.getSubject();
+    }
+
+    public String getRole(String token){
+        Claims claim = this.getClaim(token);
+
+        return claim.get("role", String.class);
+    }
+
+    private Claims getClaim(String token){
+        return Jwts.parser()
             .verifyWith(key)
             .build()
             .parseSignedClaims(token)
             .getPayload();
-
-        return claim.getSubject();
     }
 
     public boolean validateToken(String token){
