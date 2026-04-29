@@ -7,7 +7,7 @@ import CategorySection from '../shared/components/CategorySection'
 import Leaderboard from '../shared/components/Leaderboard'
 import { useMarkets } from '../features/markets/useMarket'
 import BetCard from '../shared/components/BetCard'
-import { API_BASE } from '../config'
+import { apiFetch } from '../shared/api'
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -28,21 +28,18 @@ export default function Dashboard() {
   const handleClaimDaily = async () => {
     setClaimLoading(true)
     try {
-      const response = await fetch(
-        `${API_BASE}/api/users/${user.id}/claim-daily-reward`,
+      const updatedUser = await apiFetch(
+        `/api/users/${user.id}/claim-daily-reward`,
         { method: 'POST' }
       )
-      if (response.status === 409) {
-        setClaimedToday(true)
-        return
-      }
-      if (!response.ok) throw new Error('Failed to claim reward')
-      const updatedUser = await response.json()
-      login(updatedUser)
+      login({ ...updatedUser, token: localStorage.getItem('token') })
       setClaimedToday(true)
       setToast('250 coins claimed!')
       setTimeout(() => setToast(null), 3000)
     } catch (err) {
+      if (err.status === 409) {
+        setClaimedToday(true)
+      }
     } finally {
       setClaimLoading(false)
     }
@@ -73,27 +70,16 @@ export default function Dashboard() {
     setBetError(null)
 
     try {
-      const response = await fetch(
-        `${API_BASE}/api/bets/user/${user.id}/market/${modal.id}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: parseFloat(betAmount),
-            selectedOption: { id: selectedOption.id },
-          }),
-        }
-      )
+      await apiFetch(`/api/bets/user/${user.id}/market/${modal.id}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          amount: parseFloat(betAmount),
+          selectedOption: { id: selectedOption.id },
+        }),
+      })
 
-      if (!response.ok) {
-        const errText = await response.text()
-        throw new Error(errText || 'Failed to place bet')
-      }
-
-      const updatedUser = await fetch(
-        `${API_BASE}/api/users/${user.id}`
-      ).then((r) => r.json())
-      login(updatedUser)
+      const updatedUser = await apiFetch(`/api/users/${user.id}`)
+      login({ ...updatedUser, token: localStorage.getItem('token') })
 
       setModal(null)
       refresh()
@@ -121,6 +107,14 @@ export default function Dashboard() {
           >
             Leaderboard
           </button>
+          {user?.role === 'ADMIN' && (
+            <button
+              onClick={() => navigate('/admin')}
+              className={styles.navLink}
+            >
+              Admin
+            </button>
+          )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div className={styles.balanceChip}>
@@ -221,7 +215,7 @@ export default function Dashboard() {
         <div className={styles.sidebar}>
           <div className={styles.title}>This Months Biggest Lossers</div>
           <Leaderboard
-            url={`${API_BASE}/api/users/leaderboard/monthly-losses`}
+            url={`/api/users/leaderboard/monthly-losses`}
             label="Amt. Lost"
           />
 
