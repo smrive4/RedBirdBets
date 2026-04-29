@@ -1,6 +1,7 @@
 package com.predictionmarket.controller;
 
 import java.util.List;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.predictionmarket.model.Market;
-import com.predictionmarket.model.User;
 import com.predictionmarket.service.MarketService;
-import com.predictionmarket.service.UserService;
 
 @RestController
 @RequestMapping("/api/markets")
@@ -23,19 +25,22 @@ public class MarketController {
     @Autowired
     private MarketService marketService;
 
-    @Autowired
-    private UserService userService;
+    private void requireAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-    private void requireAdmin(Long requesterId) {
-        User requester = userService.getUserById(requesterId);
-        if (!requester.getRole().equals("ADMIN")) {
-            throw new IllegalStateException("Admin access required");
+        for (GrantedAuthority authority: authorities){
+            if(authority.getAuthority().equals("ADMIN")){
+                return;
+            } 
         }
+
+        throw new IllegalStateException("Admin access required");
     }
 
     @PostMapping
-    public Market create(@RequestBody Market market, @RequestParam Long requesterId) {
-        requireAdmin(requesterId);
+    public Market create(@RequestBody Market market) {
+        requireAdmin();
         return marketService.createMarket(market);
     }
 
@@ -50,16 +55,15 @@ public class MarketController {
     }
 
     @PostMapping("/{id}/close")
-    public Market close(@PathVariable Long id, @RequestParam Long requesterId) {
-        requireAdmin(requesterId);
+    public Market close(@PathVariable Long id) {
+        requireAdmin();
         return marketService.closeMarket(id);
     }
 
     @PostMapping("/{id}/resolve")
     public void resolve(@PathVariable Long id,
-                        @RequestParam Long winningOptionId,
-                        @RequestParam Long requesterId) {
-        requireAdmin(requesterId);
+                        @RequestParam Long winningOptionId) {
+        requireAdmin();
         marketService.resolveMarket(id, winningOptionId);
     }
 }

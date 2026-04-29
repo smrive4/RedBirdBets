@@ -1,60 +1,55 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import styles from './Auth.module.css';
-import logo from "../assets/Logo.png";
-import { API_BASE } from '../config'
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import styles from './Auth.module.css'
+import logo from '../assets/Logo.png'
+import { apiFetch } from '../shared/api'
 
 function Signup() {
   const [form, setForm] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+    username: '',
+    password: '',
+    confirmPassword: '',
+  })
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
   const handleSignup = async (e) => {
-    e.preventDefault();
-    setError(null);
+    e.preventDefault()
+    setError(null)
 
     if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
-      return;
+      setError('Passwords do not match')
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
     try {
-      const response = await fetch(`${API_BASE}/api/users/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      await apiFetch('/api/users/register', {
+        method: 'POST',
         body: JSON.stringify({
           username: form.username,
           password: form.password,
           balance: 1000,
         }),
-      });
+      })
 
-      if (!response.ok) {
-        throw new Error("Username already taken or registration failed");
-      }
-
-      navigate("/login");
+      navigate('/login')
     } catch (err) {
-      setError(err.message);
+      setError(err.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className={styles["auth-container"]}>
+    <div className={styles['auth-container']}>
       <div className={styles.left}>
-        <Link to="/" className={styles["brand-link"]}>
+        <Link to="/" className={styles['brand-link']}>
           <img src={logo} alt="logo" />
           <h1>Redbird Bets</h1>
         </Link>
@@ -92,26 +87,26 @@ function Signup() {
           />
 
           {error && (
-            <p style={{ color: "red", fontSize: "14px", marginBottom: "12px" }}>
+            <p style={{ color: 'red', fontSize: '14px', marginBottom: '12px' }}>
               {error}
             </p>
           )}
 
-          <button className={styles["login-btn"]} disabled={loading}>
-            {loading ? "Creating Account..." : "Create Account"}
+          <button className={styles['login-btn']} disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
 
           <button
             type="button"
-            className={styles["signup-btn"]}
-            onClick={() => navigate("/login")}
+            className={styles['signup-btn']}
+            onClick={() => navigate('/login')}
           >
             ALREADY HAVE AN ACCOUNT?
           </button>
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default Signup;
+export default Signup

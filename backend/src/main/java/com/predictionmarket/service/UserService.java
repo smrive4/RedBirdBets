@@ -9,8 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.predictionmarket.dto.UserResponse;
 import com.predictionmarket.model.User;
 import com.predictionmarket.repository.UserRepository;
+import com.predictionmarket.security.JwtUtil;
 
 @Service
 public class UserService {
@@ -20,6 +22,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public User registerUser(String username, String password, BigDecimal balance) {
         User user = new User();
@@ -36,11 +41,11 @@ public class UserService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-    public User loginAndGetUser(String username, String password) {
+    public UserResponse loginAndGetUser(String username, String password) {
         User user = userRepository.findByUsername(username);
         if (user == null) return null;
         if (!passwordEncoder.matches(password, user.getPassword())) return null;
-        return user;
+        return new UserResponse(user.getId(), user.getUsername(), user.getRole(), user.getBalance(), jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
 
     public User getUserById(Long id) {

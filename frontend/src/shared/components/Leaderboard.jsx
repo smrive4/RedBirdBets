@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../features/auth/AuthContext'
 import styles from './Leaderboard.module.css'
+import { apiFetch } from '../api'
 
 function formatAmount(amt) {
   return '$ ' + amt.toFixed(0)
@@ -12,8 +13,7 @@ function Leaderboard({ url, label }) {
   const [entries, setEntries] = useState([])
 
   useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
+    apiFetch(url)
       .then((data) => {
         setEntries(data)
         setLoading(false)

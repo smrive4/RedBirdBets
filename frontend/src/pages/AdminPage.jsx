@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../features/auth/AuthContext'
 import styles from './AdminPage.module.css'
-import { API_BASE } from '../config'
-const BASE = API_BASE
+import { apiFetch } from '../shared/api'
 
 // const Styles.inputStyle = {
 //   width: '100%',
@@ -63,9 +62,7 @@ export default function AdminPage() {
   }
 
   const loadMarkets = () => {
-    fetch(`${BASE}/api/markets`)
-      .then((r) => r.json())
-      .then(setMarkets)
+    apiFetch('/api/markets').then(setMarkets)
   }
 
   useEffect(() => {
@@ -73,44 +70,38 @@ export default function AdminPage() {
   }, [])
 
   const handleCreate = async (e) => {
-  e.preventDefault()
-  setError(null)
-  const filledOptions = options.map((o) => o.trim()).filter((o) => o !== '')
-  if (filledOptions.length < 2) {
-    setError('Please provide at least 2 options.')
-    return
+    e.preventDefault()
+    setError(null)
+    const filledOptions = options.map((o) => o.trim()).filter((o) => o !== '')
+    if (filledOptions.length < 2) {
+      setError('Please provide at least 2 options.')
+      return
+    }
+    try {
+      await apiFetch(`/api/markets?requesterId=${user.id}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          title: form.title,
+          description: form.description,
+          closeTime: form.closeTime,
+          marketCategory: form.marketCategory,
+          options: filledOptions.map((name) => ({ optionName: name })),
+        }),
+      })
+      setForm({ title: '', description: '', closeTime: '', marketCategory: '' })
+      setOptions(['', ''])
+      loadMarkets()
+      showSuccess('Market created!')
+    } catch (err) {
+      setError(err.message)
+    }
   }
-  try {
-    const res = await fetch(`${BASE}/api/markets?requesterId=${user.id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: form.title,
-        description: form.description,
-        closeTime: form.closeTime,
-        marketCategory: form.marketCategory,
-        options: filledOptions.map((name) => ({ optionName: name })),
-      }),
-    })
-    if (!res.ok) throw new Error(await res.text())
-    setForm({ title: '', description: '', closeTime: '', marketCategory: '' })
-    setOptions(['', ''])
-    loadMarkets()
-    showSuccess('Market created!')
-  } catch (err) {
-    setError(err.message)
-  }
-}
 
   const handleClose = async (id) => {
     try {
-      const res = await fetch(
-        `${BASE}/api/markets/${id}/close?requesterId=${user.id}`,
-        {
-          method: 'POST',
-        }
-      )
-      if (!res.ok) throw new Error(await res.text())
+      await apiFetch(`/api/markets/${id}/close?requesterId=${user.id}`, {
+        method: 'POST',
+      })
       loadMarkets()
       showSuccess('Market closed!')
     } catch (err) {
@@ -120,11 +111,10 @@ export default function AdminPage() {
 
   const handleResolve = async (id, winningSide) => {
     try {
-      const res = await fetch(
-        `${BASE}/api/markets/${id}/resolve?winningOptionId=${winningSide}&requesterId=${user.id}`,
+      await apiFetch(
+        `/api/markets/${id}/resolve?winningOptionId=${winningSide}&requesterId=${user.id}`,
         { method: 'POST' }
       )
-      if (!res.ok) throw new Error(await res.text())
       loadMarkets()
       showSuccess(`Market resolved! Winner: ${winningSide}`)
     } catch (err) {
@@ -254,7 +244,10 @@ export default function AdminPage() {
             </select>
             <label className={styles.label}>Options (min. 2)</label>
             {options.map((opt, i) => (
-              <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+              <div
+                key={i}
+                style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}
+              >
                 <input
                   className={styles.inputStyle}
                   style={{ marginBottom: 0, flex: 1 }}
@@ -270,7 +263,9 @@ export default function AdminPage() {
                   <button
                     type="button"
                     style={{ ...dangerBtn, padding: '8px 12px' }}
-                    onClick={() => setOptions(options.filter((_, idx) => idx !== i))}
+                    onClick={() =>
+                      setOptions(options.filter((_, idx) => idx !== i))
+                    }
                   >
                     ✕
                   </button>
@@ -279,7 +274,12 @@ export default function AdminPage() {
             ))}
             <button
               type="button"
-              style={{ ...secondaryBtn, marginBottom: '16px', fontSize: '13px', padding: '7px 14px' }}
+              style={{
+                ...secondaryBtn,
+                marginBottom: '16px',
+                fontSize: '13px',
+                padding: '7px 14px',
+              }}
               onClick={() => setOptions([...options, ''])}
             >
               + Add Option

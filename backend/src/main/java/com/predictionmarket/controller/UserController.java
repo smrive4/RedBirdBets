@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.predictionmarket.dto.LeaderboardEntryDTO;
+import com.predictionmarket.dto.UserResponse;
 import com.predictionmarket.model.User;
 import com.predictionmarket.service.BetService;
 import com.predictionmarket.service.UserService;
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/login-user")
-    public User loginAndGetUser(@RequestParam String username, @RequestParam String password) {
+    public UserResponse loginAndGetUser(@RequestParam String username, @RequestParam String password) {
         return userService.loginAndGetUser(username, password);
     }
 

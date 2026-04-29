@@ -4,7 +4,7 @@ import { useAuth } from '../features/auth/AuthContext'
 import styles from './Leaderboard.module.css'
 import { useNavigate } from 'react-router-dom'
 import Leaderboard from '../shared/components/Leaderboard'
-import { API_BASE } from '../config'
+import { apiFetch } from '../shared/api'
 
 function LeaderboardPage() {
   const { user, logout } = useAuth()
@@ -18,8 +18,7 @@ function LeaderboardPage() {
   }
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/users/leaderboard/${mode}`)
-      .then((res) => res.json())
+    apiFetch(`/api/users/leaderboard/${mode}`)
       .then((data) => {
         setEntries(data)
         setLoading(false)
@@ -98,10 +97,7 @@ function LeaderboardPage() {
         </div>
         {/* LeaderBoard */}
         <div className={styles.lbContainer}>
-          <Leaderboard
-            url={`${API_BASE}/api/users/leaderboard/${mode}`}
-            label={mode}
-          />
+          <Leaderboard url={`/api/users/leaderboard/${mode}`} label={mode} />
         </div>
       </div>
     </div>

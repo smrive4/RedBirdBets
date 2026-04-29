@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { API_BASE } from '../../config'
+import { apiFetch } from '../../shared/api'
 
 function getRecentlyCreated(markets) {
   let recMarkets = markets.filter((m) => m.createdAt != null)
@@ -22,8 +22,7 @@ export function useMarkets() {
   const refresh = () => setRefetch((prev) => prev + 1)
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/markets`)
-      .then((res) => res.json())
+    apiFetch('/api/markets')
       .then((data) => {
         setMarkets(data.filter((m) => m.status === 'OPEN'))
         setLoading(false)
