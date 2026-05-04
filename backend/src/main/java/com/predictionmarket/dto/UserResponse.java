@@ -2,6 +2,7 @@ package com.predictionmarket.dto;
 
 import java.math.BigDecimal;
 
+// DTO for representing a user response with ID, username, role, balance, and authentication token
 public class UserResponse{
     private Long id;
     private String username;

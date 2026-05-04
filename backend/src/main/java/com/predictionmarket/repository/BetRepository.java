@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.predictionmarket.dto.LeaderboardEntryDTO;
 import com.predictionmarket.model.Bet;
-
+// Repository interface for performing CRUD operations on Bet entities and custom queries for leaderboard data
 public interface BetRepository extends JpaRepository<Bet, Long> {
     List<Bet> findByUserId(Long userId);
     List<Bet> findByMarketId(Long marketId);

@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.List;
-
+/* Configuration class for setting up security filters and CORS settings */
 @Configuration
 public class SecurityConfig {
     @Autowired
@@ -26,6 +26,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // Configure the security filter chain to handle authentication and authorization for incoming HTTP requests
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -40,6 +41,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Configure CORS settings to allow requests from specific origins and with specific methods and headers
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

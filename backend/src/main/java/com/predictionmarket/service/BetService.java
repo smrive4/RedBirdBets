@@ -19,6 +19,7 @@ import com.predictionmarket.repository.MarketOptionRepository;
 import com.predictionmarket.repository.MarketRepository;
 import com.predictionmarket.repository.UserRepository;
 
+/* Service class for handling bet-related operations */
 @Service
 public class BetService {
 

@@ -2,6 +2,7 @@ package com.predictionmarket.dto;
 
 import java.math.BigDecimal;
 
+// DTO for representing a leaderboard entry with user ID, username, and balance
 public class LeaderboardEntryDTO {
     public Long id;
     public String username;

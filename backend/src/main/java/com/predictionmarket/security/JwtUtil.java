@@ -15,7 +15,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-
+// Utility class for creating and validating JWT tokens, extracting user information from tokens, and managing the secret key used for signing tokens
 @Component
 public class JwtUtil {
     @Value("${app.jwt.secret}")
@@ -29,6 +29,7 @@ public class JwtUtil {
 
     }
 
+    /* Create a JWT token with the specified username and role */
     public String createToken(String username, String role){
         Instant now = Instant.now();
         
@@ -41,18 +42,21 @@ public class JwtUtil {
             .compact();
     }
 
+    // Extract the username from a JWT token by parsing the token's claims and retrieving the subject claim
     public String getUsername(String token){
         Claims claim = this.getClaim(token);
 
         return claim.getSubject();
     }
 
+    // Extract the user's role from a JWT token by parsing the token's claims and retrieving the "role" claim
     public String getRole(String token){
         Claims claim = this.getClaim(token);
 
         return claim.get("role", String.class);
     }
 
+    // Helper method to parse a JWT token and extract its claims, throwing an exception if the token is invalid
     private Claims getClaim(String token){
         return Jwts.parser()
             .verifyWith(key)
@@ -61,6 +65,7 @@ public class JwtUtil {
             .getPayload();
     }
 
+    // Validate a JWT token by verifying its signature and checking its expiration date, returning true if the token is valid and false otherwise
     public boolean validateToken(String token){
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);

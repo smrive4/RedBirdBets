@@ -3,7 +3,7 @@ package com.predictionmarket.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+/* Model class representing a user in the system */
 @Entity
 @Table(name = "users")
 public class User {

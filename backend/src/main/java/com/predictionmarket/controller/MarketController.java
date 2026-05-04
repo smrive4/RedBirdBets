@@ -18,6 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.predictionmarket.model.Market;
 import com.predictionmarket.service.MarketService;
 
+/**
+ * Controller for handling market-related requests.
+ */
 @RestController
 @RequestMapping("/api/markets")
 public class MarketController {
@@ -25,6 +28,7 @@ public class MarketController {
     @Autowired
     private MarketService marketService;
 
+    // Helper method to check if the current user has admin privileges
     private void requireAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -38,28 +42,33 @@ public class MarketController {
         throw new IllegalStateException("Admin access required");
     }
 
+    // Create a new market (admin only)
     @PostMapping
     public Market create(@RequestBody Market market) {
         requireAdmin();
         return marketService.createMarket(market);
     }
 
+    // Get all markets
     @GetMapping
     public List<Market> all() {
         return marketService.getAllMarkets();
     }
 
+    // Get a specific market by ID
     @GetMapping("/{id}")
     public Market one(@PathVariable Long id) {
         return marketService.getMarketById(id);
     }
 
+    // Close a market (admin only)
     @PostMapping("/{id}/close")
     public Market close(@PathVariable Long id) {
         requireAdmin();
         return marketService.closeMarket(id);
     }
 
+    // Resolve a market by specifying the winning option (admin only)
     @PostMapping("/{id}/resolve")
     public void resolve(@PathVariable Long id,
                         @RequestParam Long winningOptionId) {

@@ -17,6 +17,7 @@ import com.predictionmarket.repository.MarketOptionRepository;
 import com.predictionmarket.repository.MarketRepository;
 import com.predictionmarket.repository.UserRepository;
 
+/* Service class for handling market-related operations */
 @Service
 public class MarketService {
 

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
-
+/* Model class representing an option within a market, such as "YES", "NO", "US", "Germany", etc. */
 @Entity
 @Table(name = "market_options")
 public class MarketOption {

@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+/* Model class representing a bet placed by a user */
 @Entity
 @Table(name = "bets")
 public class Bet {

@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
 
+/* Main application class for the Prediction Market */
 @SpringBootApplication
 public class PredictionMarketApplication {
 

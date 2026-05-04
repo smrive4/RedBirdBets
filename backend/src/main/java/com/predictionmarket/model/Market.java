@@ -20,6 +20,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
+/* Model class representing a market with various options */
 @Entity
 @Table(name = "markets")
 public class Market {
