@@ -67,7 +67,7 @@
 ## Project Structure
 
 ```
-IT391-GamblingApp/
+RedBirdBets/
 ├── backend/                        # Spring Boot REST API
 │   └── src/main/java/com/predictionmarket/
 │       ├── controller/             # REST endpoints (Users, MarketsBets)
