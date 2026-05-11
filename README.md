@@ -24,8 +24,8 @@
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/ASihweil/IT391-GamblingApp.git
-   cd IT391-GamblingApp/backend
+   git clone https://github.com/smrive4/RedBirdBets.git
+   cd RedBirdBets/backend
    ```
 
 2. **Set up your environment variables**
